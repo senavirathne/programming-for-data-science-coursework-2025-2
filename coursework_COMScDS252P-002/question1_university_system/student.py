@@ -1,9 +1,7 @@
 """Student class with enrollment and grading behavior."""
 
-from __future__ import annotations
 
 from datetime import datetime
-
 from person import Person
 
 
@@ -11,6 +9,10 @@ class Student(Person):
     """Represent a student and their academic record."""
 
     MAX_COURSES_PER_SEMESTER = 6
+    MIN_GRADE = 0.0
+    MAX_GRADE = 4.0
+    MIN_YEAR = 1900
+    MAX_YEAR = 2100
 
     def __init__(
         self,
@@ -21,7 +23,7 @@ class Student(Person):
         student_id: str,
         major: str,
         enrollment_date: str,
-    ) -> None:
+    ):
         """Initialize a student record.
 
         Args:
@@ -31,25 +33,43 @@ class Student(Person):
             phone: Student phone number.
             student_id: Unique student identifier.
             major: Student's major subject.
-            enrollment_date: Enrollment date in YYYY-MM-DD format.
+            enrollment_date: Enrollment date.
 
         Returns:
             None
+        
+        Raises:
+            TypeError: If an argument is of the wrong type.
+            ValueError: If an argument is invalid.
         """
         super().__init__(name, person_id, email, phone)
 
+        if not isinstance(student_id, str):
+            raise TypeError("Student ID must be a string.")
+        if not isinstance(major, str):
+            raise TypeError("Major must be a string.")
+        if not isinstance(enrollment_date, str):
+            raise TypeError("Enrollment date must be a string.")
+
         if not student_id.strip():
             raise ValueError("Student ID cannot be empty.")
+
+        self._validate_date(enrollment_date)
 
         self._student_id = student_id
         self.major = major
         self.enrollment_date = enrollment_date
         self._enrolled_courses: list[str] = []
         self._grades: dict[str, float] = {}
+        self._gpa: float = 0.0
 
     @property
     def student_id(self) -> str:
-        """Get student ID (read-only)."""
+        """Get student ID (read-only).
+
+        Returns:
+            The student's unique ID.
+        """
         return self._student_id
 
     @property
@@ -59,88 +79,32 @@ class Student(Person):
 
     @major.setter
     def major(self, value: str) -> None:
-        """Set student's major."""
+        """Set student's major.
+        
+        Args:
+           value: The new major.
+
+        Raises:
+            ValueError: If the major is empty.
+            TypeError: If the major is not a string.
+        """
+        if not isinstance(value, str):
+            raise TypeError("Major must be a string.")
         if not value.strip():
             raise ValueError("Major cannot be empty.")
         self._major = value.strip()
 
-    @property
-    def enrollment_date(self) -> str:
-        """Get enrollment date."""
-        return self._enrollment_date
 
-    @enrollment_date.setter
-    def enrollment_date(self, value: str) -> None:
-        """Set enrollment date in YYYY-MM-DD format."""
-        if not self._is_valid_date(value):
-            raise ValueError("Enrollment date must be in YYYY-MM-DD format.")
-        self._enrollment_date = value
-
-    @staticmethod
-    def _is_valid_date(value: str) -> bool:
-        """Check whether a date uses the YYYY-MM-DD format.
-
-        Args:
-            value: Date string to validate.
-
-        Returns:
-            True if the date format is valid, otherwise False.
-        """
-        try:
-            datetime.strptime(value, "%Y-%m-%d")
-            return True
-        except ValueError:
-            return False
 
     @property
     def enrolled_courses(self) -> list[str]:
         """Return a copy of enrolled course codes."""
         return list(self._enrolled_courses)
 
-    @enrolled_courses.setter
-    def enrolled_courses(self, courses: list[str]) -> None:
-        """Replace enrolled courses after checking the course limit.
-
-        Args:
-            courses: Course codes to assign to the student.
-
-        Returns:
-            None
-
-        Raises:
-            ValueError: If the number of unique courses exceeds the limit.
-        """
-        unique_courses = list(dict.fromkeys(courses))
-        if len(unique_courses) > self.MAX_COURSES_PER_SEMESTER:
-            raise ValueError(
-                f"Course limit exceeded. Maximum allowed is "
-                f"{self.MAX_COURSES_PER_SEMESTER} courses."
-            )
-        self._enrolled_courses = unique_courses
-
     @property
     def grades(self) -> dict[str, float]:
         """Return a copy of the grade records."""
         return dict(self._grades)
-
-    @grades.setter
-    def grades(self, grade_map: dict[str, float]) -> None:
-        """Replace all grade records after validating each grade.
-
-        Args:
-            grade_map: Mapping from course code to grade value.
-
-        Returns:
-            None
-
-        Raises:
-            ValueError: If any grade is outside the 0.0 to 4.0 range.
-        """
-        validated: dict[str, float] = {}
-        for course_code, grade in grade_map.items():
-            self._validate_grade(grade)
-            validated[course_code] = float(grade)
-        self._grades = validated
 
     @property
     def gpa(self) -> float:
@@ -149,7 +113,7 @@ class Student(Person):
         Returns:
             The grade point average for available grades.
         """
-        return self.calculate_gpa()
+        return self._gpa
 
     def enroll_course(self, course_code: str) -> None:
         """Enroll the student in a course.
@@ -182,6 +146,7 @@ class Student(Person):
         if course_code in self._enrolled_courses:
             self._enrolled_courses.remove(course_code)
             self._grades.pop(course_code, None)
+            self.calculate_gpa()
 
     def add_grade(self, course_code: str, grade: float) -> None:
         """Add or update a grade for an enrolled course.
@@ -199,16 +164,18 @@ class Student(Person):
             )
         self._validate_grade(grade)
         self._grades[course_code] = float(grade)
+        self.calculate_gpa()
 
-    def calculate_gpa(self) -> float:
-        """Calculate GPA on a 0.0 to 4.0 scale.
+    def calculate_gpa(self) -> None:
+        """Calculate cumulative GPA and set gpa.
 
         Returns:
-            The average grade rounded to two decimal places.
+            None
         """
         if not self._grades:
-            return 0.0
-        return round(sum(self._grades.values()) / len(self._grades), 2)
+            self._gpa = 0.0
+        else:
+            self._gpa = round(sum(self._grades.values()) / len(self._grades), 2)
 
     def get_academic_status(self) -> str:
         """Return academic status from GPA.
@@ -251,7 +218,7 @@ class Student(Person):
 
     @staticmethod
     def _validate_grade(grade: float) -> None:
-        """Validate that a grade is between 0.0 and 4.0.
+        """Validate that a grade is within the allowed range.
 
         Args:
             grade: Grade value to validate.
@@ -262,5 +229,30 @@ class Student(Person):
         Raises:
             ValueError: If the grade is outside the valid range.
         """
-        if not (0.0 <= float(grade) <= 4.0):
-            raise ValueError("Grade must be between 0.0 and 4.0.")
+        if not (Student.MIN_GRADE <= float(grade) <= Student.MAX_GRADE):
+            raise ValueError(
+                f"Grade must be between {Student.MIN_GRADE} and {Student.MAX_GRADE}."
+            )
+
+    @staticmethod
+    def _validate_date(date_str: str) -> None:
+        """Validate date format and range.
+
+        Args:
+            date_str: Date string in YYYY-MM-DD format.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: If format is invalid or year is out of range.
+        """
+        try:
+            dt = datetime.strptime(date_str, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError(f"Invalid date format '{date_str}'. Expected YYYY-MM-DD.")
+
+        if not (Student.MIN_YEAR <= dt.year <= Student.MAX_YEAR):
+            raise ValueError(
+                f"Year must be between {Student.MIN_YEAR} and {Student.MAX_YEAR}."
+            )

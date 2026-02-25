@@ -2,8 +2,6 @@
 
 from __future__ import annotations
 
-import re
-
 
 class Person:
     """Represent a person with basic and contact details."""
@@ -15,11 +13,21 @@ class Person:
             name: Person's full name.
             person_id: Unique ID of the person.
             email: Person's email address.
-            phone: Person's phone number (a valid Sri Lankan number).
+            phone: Person's phone number.
 
         Raises:
             ValueError: If a value is invalid.
+            TypeError: If a value is of the wrong type.
         """
+        if not isinstance(name, str):
+            raise TypeError("Name must be a string.")
+        if not isinstance(person_id, str):
+            raise TypeError("Person ID must be a string.")
+        if not isinstance(email, str):
+            raise TypeError("Email must be a string.")
+        if not isinstance(phone, str):
+            raise TypeError("Phone must be a string.")
+
         if not name.strip():
             raise ValueError("Name cannot be empty.")
         if not person_id.strip():
@@ -37,7 +45,17 @@ class Person:
 
     @name.setter
     def name(self, value: str) -> None:
-        """Set the person's name."""
+        """Set the person's name.
+        
+        Args:
+            value: New name.
+
+        Raises:
+            ValueError: If the name is empty.
+            TypeError: If the name is not a string.
+        """
+        if not isinstance(value, str):
+            raise TypeError("Name must be a string.")
         if not value.strip():
             raise ValueError("Name cannot be empty.")
         self._name = value.strip()
@@ -54,9 +72,16 @@ class Person:
 
     @email.setter
     def email(self, value: str) -> None:
-        """Set the person's email."""
-        if not self.__is_valid_email(value):
-            raise ValueError("Invalid email format.")
+        """Set the person's email.
+        
+        Args:
+            value: New email address.
+            
+        Raises:
+            TypeError: If the email is not a string.
+        """
+        if not isinstance(value, str):
+            raise TypeError("Email must be a string.")
         self._email = value
 
     @property
@@ -66,37 +91,17 @@ class Person:
 
     @phone.setter
     def phone(self, value: str) -> None:
-        """Set the person's phone number."""
-        if not self.__is_valid_phone(value):
-            raise ValueError("Invalid phone number")
+        """Set the person's phone number.
+        
+        Args:
+            value: New phone number.
+            
+        Raises:
+            TypeError: If the phone is not a string.
+        """
+        if not isinstance(value, str):
+            raise TypeError("Phone must be a string.")
         self._phone = value
-
-    def __is_valid_email(self, email: str) -> bool:
-        """Check whether an email address has a valid format.
-
-        Args:
-            email: Email address to validate.
-
-        Returns:
-            True if the email format is valid, otherwise False.
-        """
-        return bool(
-            re.fullmatch(
-                r"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
-                email,
-            )
-        )
-
-    def __is_valid_phone(self, phone: str) -> bool:
-        """Check whether a phone number is a valid Sri Lankan mobile number.
-
-        Args:
-            phone: Phone number to validate.
-
-        Returns:
-            True if the phone number is valid, otherwise False.
-        """
-        return bool(re.fullmatch(r"(?:\+94|0)7\d{8}", phone.replace(" ", "")))
 
     def get_info(self) -> dict[str, str]:
         """Return person details as a dictionary.
@@ -121,23 +126,16 @@ class Person:
 
         Returns:
             None
-
-        Raises:
-            ValueError: If a provided email or phone value is invalid.
         """
         if email is not None:
-            if not self.__is_valid_email(email):
-                raise ValueError("Invalid email format.")
             self.email = email
         if phone is not None:
-            if not self.__is_valid_phone(phone):
-                raise ValueError("Invalid phone number")
             self.phone = phone
 
     def get_responsibilities(self) -> str:
         """Return default responsibilities.
 
         Returns:
-            A basic responsibility message for any person.
+            A basic responsibility message for any person (student or staff).
         """
         return "Follow university policies and contribute positively to the campus community."

@@ -1,14 +1,15 @@
 """Faculty class for the university management system."""
 
-from __future__ import annotations
 
 from datetime import datetime
-
 from person import Person
 
 
 class Faculty(Person):
     """Represent a faculty member and their employment details."""
+
+    MIN_YEAR = 1900
+    MAX_YEAR = 2100
 
     def __init__(
         self,
@@ -29,15 +30,28 @@ class Faculty(Person):
             phone: Faculty phone number.
             employee_id: Unique employee identifier.
             department: Department name.
-            hire_date: Hiring date in YYYY-MM-DD format.
+            hire_date: Hiring date.
 
         Returns:
             None
+
+        Raises:
+            TypeError: If an argument is of the wrong type.
+            ValueError: If an argument is invalid.
         """
         super().__init__(name, person_id, email, phone)
 
+        if not isinstance(employee_id, str):
+            raise TypeError("Employee ID must be a string.")
+        if not isinstance(department, str):
+            raise TypeError("Department must be a string.")
+        if not isinstance(hire_date, str):
+            raise TypeError("Hire date must be a string.")
+
         if not employee_id.strip():
             raise ValueError("Employee ID cannot be empty.")
+
+        self._validate_date(hire_date)
 
         self._employee_id = employee_id
         self.department = department
@@ -45,7 +59,11 @@ class Faculty(Person):
 
     @property
     def employee_id(self) -> str:
-        """Get employee ID (read-only)."""
+        """Get employee ID (read-only).
+
+        Returns:
+            The unique employee ID.
+        """
         return self._employee_id
 
     @property
@@ -55,38 +73,22 @@ class Faculty(Person):
 
     @department.setter
     def department(self, value: str) -> None:
-        """Set department name."""
+        """Set department name.
+
+        Args:
+            value: The new department name.
+
+        Raises:
+            ValueError: If the department name is empty.
+            TypeError: If the department name is not a string.
+        """
+        if not isinstance(value, str):
+            raise TypeError("Department must be a string.")
         if not value.strip():
             raise ValueError("Department cannot be empty.")
         self._department = value.strip()
 
-    @property
-    def hire_date(self) -> str:
-        """Get hire date."""
-        return self._hire_date
 
-    @hire_date.setter
-    def hire_date(self, value: str) -> None:
-        """Set hire date in YYYY-MM-DD format."""
-        if not self._is_valid_date(value):
-            raise ValueError("Hire date must be in YYYY-MM-DD format.")
-        self._hire_date = value
-
-    @staticmethod
-    def _is_valid_date(value: str) -> bool:
-        """Check whether a date uses the YYYY-MM-DD format.
-
-        Args:
-            value: Date string to validate.
-
-        Returns:
-            True if the date format is valid, otherwise False.
-        """
-        try:
-            datetime.strptime(value, "%Y-%m-%d")
-            return True
-        except ValueError:
-            return False
 
     def get_info(self) -> dict[str, str]:
         """Return faculty details as a dictionary.
@@ -114,3 +116,26 @@ class Faculty(Person):
             "Teach courses, conduct research, mentor students, and participate "
             "in departmental service."
         )
+
+    @staticmethod
+    def _validate_date(date_str: str) -> None:
+        """Validate date format and range.
+
+        Args:
+            date_str: Date string in YYYY-MM-DD format.
+
+        Returns:
+            None
+
+        Raises:
+            ValueError: If format is invalid or year is out of range.
+        """
+        try:
+            dt = datetime.strptime(date_str, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError(f"Invalid date format '{date_str}'. Expected YYYY-MM-DD.")
+
+        if not (Faculty.MIN_YEAR <= dt.year <= Faculty.MAX_YEAR):
+            raise ValueError(
+                f"Year must be between {Faculty.MIN_YEAR} and {Faculty.MAX_YEAR}."
+            )

@@ -16,7 +16,7 @@ class Course:
         course_name: str,
         credits: int,
         instructor: Faculty | None = None,
-        max_capacity: int = 30,
+        max_capacity: int = 2,
     ) -> None:
         """Create a Course object.
 
@@ -35,10 +35,19 @@ class Course:
 
         self._course_code = course_code.strip()
         self.course_name = course_name
-        self.credits = credits
-        self.instructor = instructor
+        
+        if int(credits) <= 0:
+            raise ValueError("Credits must be greater than 0.")
+        self._credits = int(credits)
+        
+        self._instructor = instructor
         self.max_capacity = max_capacity
         self._enrolled_students: list[Student] = []
+
+    @property
+    def enrolled_students(self) -> list[Student]:
+        """Get enrolled students (read-only)."""
+        return self._enrolled_students
 
     @property
     def course_code(self) -> str:
@@ -57,27 +66,6 @@ class Course:
             raise ValueError("Course name cannot be empty.")
         self._course_name = value.strip()
 
-    @property
-    def credits(self) -> int:
-        """Get course credits."""
-        return self._credits
-
-    @credits.setter
-    def credits(self, value: int) -> None:
-        """Set course credits."""
-        if int(value) <= 0:
-            raise ValueError("Credits must be greater than 0.")
-        self._credits = int(value)
-
-    @property
-    def instructor(self) -> Faculty | None:
-        """Get assigned instructor."""
-        return self._instructor
-
-    @instructor.setter
-    def instructor(self, value: Faculty | None) -> None:
-        """Set assigned instructor."""
-        self._instructor = value
 
     @property
     def max_capacity(self) -> int:
@@ -97,10 +85,6 @@ class Course:
 
         self._max_capacity = capacity
 
-    @property
-    def enrolled_students(self) -> list[Student]:
-        """Return a copy of enrolled students."""
-        return list(self._enrolled_students)
 
     def add_student(self, student: Student) -> None:
         """Add a student if capacity allows.
