@@ -12,12 +12,14 @@ Key features include class hierarchy with inheritance, polymorphic behavior, str
 coursework_COMScDS252P-002/
 └── question1_university_system/
     ├── main.py                  # Entry point demonstrating system functionality
+    ├── university_system_interactive.ipynb # Interactive UI dashboard built with ipywidgets
     ├── person.py                # Base class for all individuals
     ├── student.py               # Student entity with academic logic
     ├── faculty.py               # Faculty entity with teaching logic
     ├── staff.py                 # Staff entity for administrative roles
     ├── course.py                # Course management logic
     ├── department.py            # Departmental organization logic
+    ├── database.py              # In-memory database supporting the interactive GUI
     ├── README.md                # Project documentation
     └── tests/                   # Unit test suite
         └── test_university_system.py
@@ -74,12 +76,20 @@ The system leverages polymorphism to handle different roles uniformly:
 
 ### Running the Demonstration
 
+**CLI Simulation:**
 Execute the main script to see a simulation of the system in action, including object creation, enrollment, grading, and polymorphic behavior.
 
 ```bash
 cd coursework_COMScDS252P-002/question1_university_system
 python main.py
+```
 
+**Interactive GUI Dashboard:**
+Alternatively, open the interactive Jupyter Notebook to experience a full Graphical User Interface (GUI) managing the university system.
+
+```bash
+cd coursework_COMScDS252P-002/question1_university_system
+jupyter notebook university_system_interactive.ipynb
 ```
 
 ### Running Tests

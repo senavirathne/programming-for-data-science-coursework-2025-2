@@ -246,8 +246,9 @@ The skills developed here are directly transferable. The OOP structure models st
 
 **References:**
 
-[1] Z. Obermeyer, B. Powers, C. Vogeli, and S. Mullainathan, "Dissecting racial bias in an algorithm used to manage the health of populations," *Science*, vol. 366, no. 6464, pp. 447-453, Oct. 2019, doi: 10.1126/science.aax2342.
+Obermeyer, Z., Powers, B., Vogeli, C. and Mullainathan, S. (2019) ‘Dissecting racial bias in an algorithm used to manage the health of populations’, *Science*, 366(6464), pp. 447–453. [https://doi.org/10.1126/science.aax2342](https://doi.org/10.1126/science.aax2342)
 
-[2] *Health Insurance Portability and Accountability Act of 1996 (HIPAA)*, Pub. L. No. 104-191, 110 Stat. 1936, 1996. [Online]. Available: https://www.govinfo.gov/link/plaw/104/public/191
+Health Insurance Portability and Accountability Act of 1996 (HIPAA) (1996) *Pub. L. No. 104–191, 110 Stat. 1936*. Available at: [https://www.govinfo.gov/link/plaw/104/public/191](https://www.govinfo.gov/link/plaw/104/public/191) (Accessed: 26 February 2026).
 
-[3] *General Data Protection Regulation (GDPR)*, Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016. [Online]. Available: https://eur-lex.europa.eu/eli/reg/2016/679/oj
+European Parliament and Council of the European Union (2016) *Regulation (EU) 2016/679 of the European Parliament and of the Council of 27 April 2016 (General Data Protection Regulation)*. Available at: [https://eur-lex.europa.eu/eli/reg/2016/679/oj](https://eur-lex.europa.eu/eli/reg/2016/679/oj) (Accessed: 26 February 2026).
+

@@ -1,0 +1,10 @@
+# Python bytecode
+__pycache__/
+.venv/
+.idea/
+.venv_q2/
+*.py[cod]
+
+# macOS Finder metadata
+.DS_Store
+*.xml
