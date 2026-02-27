@@ -1,60 +1,83 @@
-# Question 3 – Data Ethics: AI Ethics in Healthcare
+# AI Ethics in Healthcare
 
 ## A. Healthcare Data Privacy
 
 ### HIPAA vs. GDPR
 
-Two main frameworks govern health data protection: **HIPAA** (USA) and **GDPR** (EU). HIPAA targets the healthcare industry — hospitals, insurers, and their partners — and permits data sharing for treatment or billing without explicit consent each time. Its primary focus is operational security.
+HIPAA and GDPR are standard frameworks for data privacy. HIPAA is a US-based framework for healthcare data, while GDPR is an EU-based framework for all data.
 
-The GDPR takes a broader approach, covering all personal data of EU residents regardless of sector. Health data is treated as a special category requiring clear, informed consent. A key distinction is the **"Right to be Forgotten"** — EU residents can request permanent deletion of their data. HIPAA has no equivalent, as US law often mandates retaining medical records for years to support legal accountability.
+HIPAA often implies use for treatment, billing, or operations. It has no `right to be forgotten`, and medical records generally require to be kept for at least 6 years. So, that is a main difference between HIPAA and GDPR. Also, the Breach Reporting period is significantly longer in HIPAA (which is 60 days) than in GDPR.
 
-### The Limits of Anonymization
+GDPR is for All Personal Data (e.g., IP addresses, names, emails, health info, etc.). It has a `right to be forgotten`, so individuals can request their data be deleted. It also has a Breach Reporting period of 72 hours. So, it likely gives more power to individuals.
 
-Removing names and ID numbers is commonly assumed to be sufficient protection. In practice, it rarely is. "De-identified" datasets can be re-identified by cross-referencing with publicly available information. In one well-known case, a researcher identified a Governor's medical records by matching anonymous hospital data with his birth date and zip code from public voter files. If a public figure's records can be traced this way, ordinary patients face the same risk.
+**Why "Anonymization" Usually Isn't Enough**
 
-### Why Health Data Is Different
+People think using fake names and ID numbers or deleting names and ID numbers makes data safe to share. But it doesn't.
 
-Health data is largely **permanent**. A stolen credit card can be cancelled; a leaked genetic profile or mental health history cannot be changed. The consequences of such a breach can affect a person's employment and insurance eligibility for a lifetime. Beyond data misuse, there is also a direct physical risk — compromised connected medical devices such as pacemakers could be used to harm patients, not merely expose their information.
+A famous study by Latanya Sweeney has shown that most (87%) Americans can be identified using just three simple facts: their birth date, gender, and zip code. She was even capable of identifying US Governor William Weld in a hospital database that did not have names on it by matching it with public voter records. People's data has patterns, and those patterns represent individuals. It doesn't need a name to be identified.
+
+Another example is genetic data. The 1000 Genomes Project shared anonymous DNA data. But later, researchers were able to identify the people and their relatives by using public family tree websites.
 
 ---
 
 ## B. Algorithmic Bias in Medical AI
 
-### Where Bias Originates
+### What is the origin of the bias?
 
-AI systems learn from data — and if that data reflects historical inequalities, the AI will inherit them. A model trained predominantly on images of lighter skin tones will perform poorly when diagnosing conditions on darker skin. If past clinical records reflect patterns where women's cardiac symptoms were taken less seriously, the AI absorbs that same bias. A more subtle issue arises when **cost is used as a proxy for health need**, since healthcare spending is shaped by income, geography, and access to care — not just illness severity.
+When an AI becomes biased, it usually happens for three reasons:
 
-### The Obermeyer Case (2019)
+1. **Underrepresentation in training data:** If an AI that checks skin for cancer is only trained on lighter skin, it will not be able to spot cancer on darker skin.
+2. **Geographic and socioeconomic collection bias:** Most AI data comes from hospitals in wealthy cities. Because of this, the AI may not work well for patients from rural areas or poorer patients.
+3. **Historical treatment biases:** If old medical records show that doctors did not take women's heart attack symptoms seriously, the AI will learn to do the same thing.
 
-Obermeyer et al. (2019) examined a widely used hospital algorithm designed to identify patients who would benefit from enhanced care. The algorithm used healthcare costs as its primary signal for medical need — a seemingly reasonable assumption. However, because systemic inequalities meant Black patients historically received less healthcare spending than White patients with equivalent conditions, the algorithm consistently ranked them as healthier than they actually were. The outcome was stark: Black patients had to be considerably sicker than White patients to receive the same level of support. Correcting this single flaw was estimated to more than double the number of Black patients receiving appropriate care.
+**A Real-World Warning: The Obermeyer Study (2019)**
 
-### Mitigation
+A study was held in 2019 covering health systems in the US. An AI was used to identify patients who needed care. Assuming that sicker patients cost more to treat, the AI used "healthcare costs" to decide who was the sickest. But the AI was not able to identify Black patients as being as sick as White patients with the same condition. Because of biases in the system, Black patients were not getting the same level of care as White patients.
 
-Addressing bias demands action on both technical and organisational levels. Techniques such as **resampling** can help ensure training data represents all demographic groups fairly, and health-specific outcome metrics should replace indirect proxies like cost. At the organisational level, building **diverse teams** to design and audit these systems is equally important — people with different backgrounds are far more likely to identify the assumptions that a homogeneous team would never think to question.
+As a result, the AI made a conclusion that Black patients were healthier than they were. In order to get the same level of care as White patients, Black patients had to be sicker than White patients. After correcting this issue, the number of Black persons who were correctly identified for medical support more than doubled.
 
----
+**How Do We Fix It?**
 
-## C. Ethical Framework for Data Scientists
+Considering reasons for bias on both technical and organizational levels, using techniques such as `resampling` can help to balance the data. Also, developers need to make sure their data is balanced and their assumptions are relevant.
 
-Before deploying any AI tool in healthcare, six questions need honest answers:
-
-1. **Is the data representative?** Does it meaningfully include people of different ages, races, genders, and socioeconomic backgrounds?
-2. **Are we measuring the right thing?** Are we relying on genuine clinical indicators, or convenient but misleading shortcuts?
-3. **Can we explain it?** Could a clinician articulate, in plain terms, why the AI reached a specific recommendation?
-4. **What happens when it fails?** Is there a clear process for human oversight to intervene?
-5. **Does it benefit patients?** Is this tool genuinely improving health outcomes, or primarily reducing institutional costs?
-6. **Have patients consented?** Are individuals aware that an AI system is influencing decisions about their care?
-
-The ability to explain AI reasoning is critical for safety. If a model flags a lung cancer diagnosis, a clinician must understand why — otherwise there is no way to distinguish a genuine finding from the model reacting to an imaging artefact. An unexplainable AI is not a clinical tool; it is a liability.
+For example, they should not measure health outcomes just using easy shortcuts like "cost." Hospitals need to have teams to test these tools before using them on real patients.
 
 ---
 
-## D. Stakeholder Impact and Policy Recommendation
+## C. Ethical Decision Framework
 
-**Patients** stand to benefit from faster diagnoses and more personalised treatment, but face significant risks from privacy breaches and biased systems. Strong protections are needed to ensure that data shared for research purposes cannot be used against patients by insurers or employers.
+Before deploying any AI system, data scientists should ask themselves the following questions:
 
-**Healthcare providers** benefit from AI efficiency but risk **automation bias** — over-reliance on algorithmic output that erodes independent clinical judgement. Training must emphasise critical evaluation of AI recommendations, not just their use, and legal accountability around AI-driven errors remains largely unresolved.
+1. **Is the data representative?** Does it include all ages, genders, ethnicities, and socioeconomic backgrounds?
+2. **Are targets clinically valid?** Is the predicted outcome a direct health measure, not a proxy that leads to inequalities?
+3. **Can the output be explained?** Can the doctor tell the patient the reasoning behind the AI's choice?
+4. **Is human oversight preserved?** Does the doctor have permission to overrule the AI?
+5. **Does it benefit patients?** Is there any practical benefit for the patients, rather than saving money for the hospital?
+6. **Have patients been informed?** Are patients aware that AI is being used to enhance their treatments?
 
-**Researchers and developers** carry the deepest responsibility. A model that performs well on aggregate metrics is not automatically safe or fair. If bias is identified before deployment, the ethical response is to delay release and address it — not to proceed and patch it later under pressure.
+Patients have a `"right to explanation."` If an AI makes a medical choice but nobody understands how, it leads to insecurity for patients' treatments.
 
-**Policy recommendation:** A qualified human clinician must retain final decision-making authority for all significant medical interventions. This protects patients through meaningful oversight and preserves the professional accountability of healthcare providers. AI should function as a tool that enhances clinical expertise — not one that substitutes for it.
+---
+
+## D. Stakeholder Impact Analysis
+
+### How This Impacts Everyone
+
+**Patients** can benefit from faster and personalized diagnoses but face risks from breaches, biased outputs, and inaccurate decisions. To prevent that, we should include data minimization, informed consent, independent advocacy in AI governance, and prohibitions on using clinical data for insurance pricing or employment screening.
+
+**Healthcare providers** can benefit from AI decision-support but face the risk of `automation bias`, blindly trusting the machine and losing their own skills. Liability for AI-influenced harm remains unresolved, and training must cover critical evaluation of recommendations, not only their use.
+
+**Researchers and developers** have the deepest responsibility. An AI might be 95% accurate overall but completely fail minority groups. If developers find bias during testing, the ethical duty is to stop the launch and fix it. It is not a bug you can patch later.
+
+**Policy recommendation:** Regulators must treat clinical AI like new medicine. Before an AI is allowed in hospitals, it needs mandatory testing by independent auditors. This keeps patients safe while ensuring humans always have the final say.
+
+---
+
+## References
+
+Gymrek, M. et al. (2013) 'Identifying personal genomes by surname inference', *Science*, 339(6117), pp. 321–324.
+
+Obermeyer, Z. et al. (2019) 'Dissecting racial bias in an algorithm used to manage the health of populations', *Science*, 366(6464), pp. 447–453.
+
+Sweeney, L. (2000) 'Simple demographics often identify people uniquely', *Carnegie Mellon University, Data Privacy Working Paper*, 3, pp. 1–34.
+

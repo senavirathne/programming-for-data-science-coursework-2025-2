@@ -1,11 +1,5 @@
 # Technical Report: Programming for Data Science (COMScDS252P)
 
-**Student Name:** [Your Name]
-**Student ID:** [Your ID]
-**Date:** 20th Feb 2026
-
----
-
 ## 1. Executive Summary
 
 This report demonstrates three software solutions: a Python based University Management System, an E-commerce Data Analysis pipeline, and an Ethics Analysis in healthcare.
