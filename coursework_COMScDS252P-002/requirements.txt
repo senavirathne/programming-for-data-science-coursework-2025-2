@@ -6,5 +6,6 @@ seaborn
 scipy
 scikit-learn
 plotly
+kaleido
 ipywidgets
 pytest

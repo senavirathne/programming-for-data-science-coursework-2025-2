@@ -33,7 +33,7 @@ def main() -> None:
         line_color="red",
         annotation_text="Mean",
     )
-    fig_hist.write_html(VIZ_DIR / "price_distribution_histogram.html")
+    fig_hist.write_image(VIZ_DIR / "price_distribution_histogram.png", scale=2)
 
     top_categories = df["Category"].value_counts().head(5).index
     df_top5 = df[df["Category"].isin(top_categories)]
@@ -44,7 +44,7 @@ def main() -> None:
         y="Price_Cleaned",
         title="Price Distribution by Category (Top 5)",
     )
-    fig_box.write_html(VIZ_DIR / "price_by_top5_category_boxplot.html")
+    fig_box.write_image(VIZ_DIR / "price_by_top5_category_boxplot.png", scale=2)
 
     fig_scatter = px.scatter(
         df,
@@ -53,7 +53,7 @@ def main() -> None:
         title="Price vs Rating",
         hover_data=["Title", "Category"],
     )
-    fig_scatter.write_html(VIZ_DIR / "price_vs_rating_scatter.html")
+    fig_scatter.write_image(VIZ_DIR / "price_vs_rating_scatter.png", scale=2)
 
     top_8_categories = (
         df.groupby("Category")["Rating_Num"]
@@ -70,7 +70,7 @@ def main() -> None:
         title="Top 8 Categories by Average Rating",
         labels={"Rating_Num": "Average Rating", "Category": "Category"},
     )
-    fig_bar.write_html(VIZ_DIR / "top8_categories_by_average_rating.html")
+    fig_bar.write_image(VIZ_DIR / "top8_categories_by_average_rating.png", scale=2)
 
     print(f"Saved visualization files to {VIZ_DIR}")
 
